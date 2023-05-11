@@ -12,11 +12,7 @@ model_1 = keras.models.load_model("keras_model.h5")
 def preprocess_data(data):
     # Normalize the data
     data.dropna(inplace=True)
-    data["Pct_change"] = data["Adj Close"].pct_change()
-
-# Drop null values
-    data.dropna(inplace = True)
-    
+    data["Pct_change"] = data["Adj Close"].pct_change()    
     
     return reshaped_data
 

@@ -2,26 +2,33 @@ import streamlit as st
 import numpy as np
 import yfinance as yf
 from tensorflow import keras
+import pickle
+import pandas as pd
 
-# Load the Keras model
-model_1 = keras.models.load_model("keras_model.h5")
+# Load the Keras LSTM model
+lstm_model = keras.models.load_model("keras_model.h5")
 
-# Function to preprocess the stock data
-def preprocess_data(data, timesteps):
-    # Normalize the data
+# Load the saved Linear Regression model
+with open('linear_regression_model.pkl', 'rb') as f:
+    linear_regression_model = pickle.load(f)
+
+# Load the saved CNN model
+cnn_model = keras.models.load_model("cnn_model.h5")
+
+# Function to preprocess data for the LSTM model
+def preprocess_data_lstm(data, timesteps):
     normalized_data = (data - np.mean(data)) / np.std(data)
-    
-    # Create input sequences
-    sequences = []
-    for i in range(timesteps, len(normalized_data)):
-        sequences.append(normalized_data[i - timesteps:i])
-    
-    # Convert to numpy array
-    sequences = np.array(sequences)
-    
-    # Reshape the data to match the model input shape
-    reshaped_data = np.reshape(sequences, (sequences.shape[0], sequences.shape[1], 1))
-    
+    reshaped_data = np.reshape(normalized_data, (1, len(data), 1))
+    return reshaped_data
+
+# Function to preprocess data for the Linear Regression model
+def preprocess_data_linear_regression(data):
+    return data.reshape(-1, 1)
+
+# Function to preprocess data for the CNN model
+def preprocess_data_cnn(data, timesteps):
+    normalized_data = (data - np.mean(data)) / np.std(data)
+    reshaped_data = np.reshape(normalized_data, (1, timesteps, 1))
     return reshaped_data
 
 # Streamlit app
@@ -40,19 +47,28 @@ def main():
     df = yf.download(stock_ticker, start, end)
     
     if not df.empty:
-        # Preprocess the stock price data
-        stock_price_data = df['Close'].values
-        timesteps = 9  # Update this value according to your LSTM model
-        processed_data = preprocess_data(stock_price_data, timesteps)
+        # Preprocess the stock price data for LSTM model
+        stock_price_data_lstm = df['Close'].values
+        processed_data_lstm = preprocess_data_lstm(stock_price_data_lstm, timesteps=9)
         
-        # Make predictions using the model
-        predicted_price = model_1.predict(processed_data)
+        # Preprocess the stock price data for Linear Regression model
+        stock_price_data_linear_regression = df['Close'].values
+        processed_data_linear_regression = preprocess_data_linear_regression(stock_price_data_linear_regression)
         
-        # Display the predicted price
-        st.write(f"The predicted price for {stock_ticker} is ${predicted_price[-1][0]:.2f}")
-    else:
-        st.write("No data available for the given stock ticker.")
-    
+        # Preprocess the stock price data for CNN model
+        stock_price_data_cnn = df['Close'].values
+        processed_data_cnn = preprocess_data_cnn(stock_price_data_cnn, timesteps=6)
+        
+        # Make predictions using each model
+        lstm_predicted_price = lstm_model.predict(processed_data_lstm)[0][0]
+        linear_regression_predicted_price = linear_regression_model.predict(processed_data_linear_regression)[0]
+        cnn_predicted_price = cnn_model.predict(processed_data_cnn)[0][0]
+        
+        # Display the predicted prices
+        st.write(f"The predicted price for {stock_ticker} (LSTM) is ${lstm_predicted_price:.2f}")
+        st.write(f"The predicted price for {stock_ticker} (Linear Regression) is ${linear_regression_predicted_price:.2f}")
+        st.write(f"The predicted price for {stock_ticker} (CNN) is ${cnn_predicted_price:.2f}")
+
 # Run the Streamlit app
 if __name__ == '__main__':
     main()

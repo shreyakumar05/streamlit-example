@@ -61,6 +61,7 @@ data_training_array = scaler.fit_transform(data_training)
 
 #Load my model
 model = load_model('keras_model.h5')
+model_2 = load_model('cnn_model.h5)
 
 #Testing Part
 
@@ -97,3 +98,39 @@ plt.ylabel('Price')
 plt.legend()
 st.pyplot(fig2)
 
+def cnn_prediction(model_2):
+    past_100_days = data_training.tail(100)
+    final_df = pd.concat([past_100_days, data_testing], ignore_index=True)
+    input_data = scaler.fit_transform(final_df)
+
+    x_test = []
+    y_test = []
+
+    for i in range(9, input_data.shape[0]):
+        x_test.append(input_data[i-9: i])
+        y_test.append(input_data[i, 0])
+
+
+    x_test, y_test = np.array(x_test), np.array(y_test)
+    y_predicted = model.predict(x_test)
+    scaler = scaler.scale_
+ 
+    scale_factor = 1/scaler[0]
+    y_predicted = y_predicted * scale_factor
+    y_test = y_test * scale_factor
+
+
+
+#Final Graph
+
+    st.subheader('Predictions vs Original')
+    fig2 = plt.figure(figsize=(12,6))
+    plt.plot(y_test, 'b', label = 'Original Price')
+    plt.plot(y_predicted, 'r', label = 'Predicted Price')
+    plt.xlabel('Time')
+    plt.ylabel('Price')
+    plt.legend()
+    st.pyplot(fig2)
+                 
+                     
+cnn_prediction(model_2)

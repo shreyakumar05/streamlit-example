@@ -52,8 +52,12 @@ def main():
         predicted_price = model_1.predict(processed_data)
         
         # Create a dataframe with actual and predicted prices
+        # Create a dataframe with actual and predicted prices
         dates = df.index[9:]  # Exclude initial dates with no predictions
         actual_predicted_df = pd.DataFrame({'Date': dates, 'Actual': stock_price_data[9:], 'Predicted': predicted_price.flatten()})
+        actual_predicted_df['Predicted'] = np.nan  # Set all predicted values as NaN initially
+        actual_predicted_df.iloc[-predicted_price.shape[0]:, -1] = predicted_price.flatten()  # Set the predicted values at the corresponding indices
+
         
         # Plot the actual and predicted prices
         fig, ax = plt.subplots(figsize=(10, 6))

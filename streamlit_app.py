@@ -4,6 +4,7 @@ import yfinance as yf
 from tensorflow import keras
 import pickle
 import pandas as pd
+from sklearn.linear_model import LinearRegression
 
 # Load the Keras LSTM model
 lstm_model = keras.models.load_model("keras_model.h5")
@@ -65,6 +66,18 @@ def main():
         processed_data_lstm = preprocess_data_lstm(stock_price_data_lstm, timesteps=9)
         
         # Preprocess the stock price data for Linear Regression model
+        
+
+# Create and fit the Linear Regression model
+        linear_regression_model = LinearRegression()
+        linear_regression_model.fit(X_train, y_train)
+
+        # Preprocess the data for Linear Regression model
+        processed_data_linear_regression = preprocess_data_linear_regression(stock_price_data_linear_regression)
+
+        # Make predictions using the Linear Regression model
+        linear_regression_predicted_price = linear_regression_model.predict(processed_data_linear_regression)[0]
+
         stock_price_data_linear_regression = df['Close'].values
         processed_data_linear_regression = preprocess_data_linear_regression(stock_price_data_linear_regression)
         

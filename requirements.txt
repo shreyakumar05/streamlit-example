@@ -8,3 +8,4 @@ scikit-learn
 scipy
 matplotlib
 numpy
+pandas_datareader

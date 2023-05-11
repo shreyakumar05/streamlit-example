@@ -61,7 +61,7 @@ data_training_array = scaler.fit_transform(data_training)
 
 #Load my model
 model = load_model('keras_model.h5')
-model_2 = load_model('cnn_model.h5)
+model_2 = load_model('cnn_model.h5')
 
 #Testing Part
 

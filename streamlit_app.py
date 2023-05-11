@@ -70,7 +70,9 @@ for i in range(sequence_length, input_data.shape[0]):
     y_test.append(input_data[i, 0])
 
 x_test, y_test = np.array(x_test), np.array(y_test)
-x_test_cnn = np.array(x_test_cnn).reshape(x_test_cnn.shape[0], x_test_cnn.shape[1], 1)
+x_test_cnn = np.array(x_test_cnn)
+x_test_cnn = np.reshape(x_test_cnn, (x_test_cnn.shape[0], x_test_cnn.shape[1], 1))
+
 
 y_predicted = model.predict(x_test)
 y_predicted_cnn = cnn_model.predict(x_test_cnn)

@@ -3,6 +3,7 @@ import numpy as np
 import yfinance as yf
 from tensorflow import keras
 import matplotlib.pyplot as plt
+import pandas as pd
 
 # Load the Keras model
 model_1 = keras.models.load_model("keras_model.h5")

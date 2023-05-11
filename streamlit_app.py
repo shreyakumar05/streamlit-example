@@ -70,8 +70,9 @@ input_data = scaler.fit_transform(final_df)
 
 x_test = []
 y_test = []
-for i in range(100, input_data.shape[0]):
-    x_test.append(input_data[i-100: i])
+
+for i in range(9, input_data.shape[0]):
+    x_test.append(input_data[i-9: i])
     y_test.append(input_data[i, 0])
 
 

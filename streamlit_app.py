@@ -9,11 +9,23 @@ import pandas as pd
 model_1 = keras.models.load_model("keras_model.h5")
 
 # Function to preprocess the stock data
-def preprocess_data(data):
+def preprocess_data(data, timesteps):
     # Normalize the data
-   
+    normalized_data = (data - np.mean(data)) / np.std(data)
     
-    return data
+    # Create input sequences
+    sequences = []
+    for i in range(timesteps, len(normalized_data)):
+        sequences.append(normalized_data[i - timesteps:i])
+    
+    # Convert to numpy array
+    sequences = np.array(sequences)
+    
+    # Reshape the data to match the model input shape
+    reshaped_data = np.reshape(sequences, (sequences.shape[0], sequences.shape[1], 1))
+    
+    return reshaped_data
+
 
 # Streamlit app
 def main():

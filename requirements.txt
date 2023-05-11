@@ -1,3 +1,8 @@
 altair
 pandas
 streamlit
+yfinance
+tensorflow
+plotly
+scikit-learn
+scipy

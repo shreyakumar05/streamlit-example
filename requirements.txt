@@ -6,3 +6,5 @@ tensorflow
 plotly
 scikit-learn
 scipy
+matplotlib
+numpy

@@ -11,20 +11,12 @@ model_1 = keras.models.load_model("keras_model.h5")
 # Function to preprocess the stock data
 def preprocess_data(data):
     # Normalize the data
-    normalized_data = (data - np.mean(data)) / np.std(data)
+    data.dropna(inplace=True)
+    data["Pct_change"] = data["Adj Close"].pct_change()
+
+# Drop null values
+    data.dropna(inplace = True)
     
-    # Create sequences of length 9
-    sequence_length = 9
-    sequences = []
-    for i in range(sequence_length, len(normalized_data)):
-        sequence = normalized_data[i - sequence_length:i]
-        sequences.append(sequence)
-    
-    # Convert sequences to numpy array
-    sequences = np.array(sequences)
-    
-    # Reshape the sequences to match the model input shape
-    reshaped_data = np.reshape(sequences, (sequences.shape[0], sequence_length, 1))
     
     return reshaped_data
 

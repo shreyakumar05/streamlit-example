@@ -56,7 +56,7 @@ model = load_model('keras_model.h5')
 cnn_model = load_model('cnn_model.h5')
 
 # Testing Part
-sequence_length = 4
+sequence_length = 9
 
 past_100_days = data_training.tail(sequence_length)
 final_df = pd.concat([past_100_days, data_testing], ignore_index=True)

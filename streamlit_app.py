@@ -16,10 +16,15 @@ with open('linear_regression_model.pkl', 'rb') as f:
 cnn_model = keras.models.load_model("cnn_model.h5")
 
 # Function to preprocess data for the LSTM model
-def preprocess_data_lstm(data, timesteps):
+\def preprocess_data_lstm(data, timesteps):
     normalized_data = (data - np.mean(data)) / np.std(data)
-    reshaped_data = np.reshape(normalized_data, (1, len(data), 1))
+    if len(normalized_data) < timesteps:
+        # Pad the data with zeros if the length is less than timesteps
+        pad_length = timesteps - len(normalized_data)
+        normalized_data = np.pad(normalized_data, (pad_length, 0), mode='constant')
+    reshaped_data = np.reshape(normalized_data[-timesteps:], (1, timesteps, 1))
     return reshaped_data
+
 
 # Function to preprocess data for the Linear Regression model
 def preprocess_data_linear_regression(data):

@@ -50,11 +50,12 @@ scaler = MinMaxScaler(feature_range=(0, 1))
 data_training_array = scaler.fit_transform(data_training)
 
 # Load my models
+# Load my models
 model = load_model('keras_model.h5')
 cnn_model = load_model('cnn_model.h5')
 
 # Testing Part
-sequence_length = 9
+sequence_length = 4
 
 past_100_days = data_training.tail(sequence_length)
 final_df = pd.concat([past_100_days, data_testing], ignore_index=True)
@@ -70,8 +71,7 @@ for i in range(sequence_length, input_data.shape[0]):
     y_test.append(input_data[i, 0])
 
 x_test, y_test = np.array(x_test), np.array(y_test)
-x_test_cnn = np.array(x_test_cnn)
-x_test_cnn = np.reshape(x_test_cnn, (x_test_cnn.shape[0], x_test_cnn.shape[1], 1))
+x_test_cnn = np.array(x_test_cnn).reshape(x_test_cnn.shape[0], x_test_cnn.shape[1], 1)
 
 y_predicted = model.predict(x_test)
 y_predicted_cnn = cnn_model.predict(x_test_cnn)

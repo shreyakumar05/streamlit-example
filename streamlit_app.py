@@ -5,7 +5,7 @@ import tensorflow as tf
 from tensorflow.keras.models import load_model
 
 # Load the Keras model
-model_1 = load_model("path_to_model.h5")
+model_1 = load_model("keras.h5")
 
 # Set the start and end dates for the stock price data
 start_date = "2010-01-01"

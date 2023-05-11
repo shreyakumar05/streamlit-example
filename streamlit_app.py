@@ -29,11 +29,12 @@ def preprocess_data_linear_regression(data):
 def preprocess_data_cnn(data, timesteps):
     normalized_data = (data - np.mean(data)) / np.std(data)
     if len(normalized_data) < timesteps:
-        # Pad the data with zeros if the length is less than timesteps
+        # Pad the data with zeros at the end if the length is less than timesteps
         pad_length = timesteps - len(normalized_data)
-        normalized_data = np.pad(normalized_data, (pad_length, 0), mode='constant')
+        normalized_data = np.pad(normalized_data, (0, pad_length), mode='constant')
     reshaped_data = np.reshape(normalized_data, (1, timesteps, 1))
     return reshaped_data
+
 
 # Streamlit app
 def main():

@@ -13,7 +13,7 @@ def preprocess_data(data):
     # Normalize the data
    
     
-    return reshaped_data
+    return data
 
 # Streamlit app
 def main():

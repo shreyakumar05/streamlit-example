@@ -28,6 +28,10 @@ def preprocess_data_linear_regression(data):
 # Function to preprocess data for the CNN model
 def preprocess_data_cnn(data, timesteps):
     normalized_data = (data - np.mean(data)) / np.std(data)
+    if len(normalized_data) < timesteps:
+        # Pad the data with zeros if the length is less than timesteps
+        pad_length = timesteps - len(normalized_data)
+        normalized_data = np.pad(normalized_data, (pad_length, 0), mode='constant')
     reshaped_data = np.reshape(normalized_data, (1, timesteps, 1))
     return reshaped_data
 

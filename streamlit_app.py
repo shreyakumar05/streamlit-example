@@ -1,40 +1,49 @@
 import streamlit as st
-import pandas as pd
+import numpy as np
 import yfinance as yf
-import tensorflow as tf
-from tensorflow.keras.models import load_model
+from tensorflow import keras
 
 # Load the Keras model
-model_1 = load_model("keras_model.h5")
+model_1 = keras.models.load_model("keras_model.h5")
 
-# Set the start and end dates for the stock price data
-start_date = "2010-01-01"
-end_date = "2019-12-31"
+# Function to preprocess the stock data
+def preprocess_data(data):
+    # Normalize the data
+    normalized_data = (data - np.mean(data)) / np.std(data)
+    
+    # Reshape the data to match the model input shape
+    reshaped_data = np.reshape(normalized_data, (1, len(data), 1))
+    
+    return reshaped_data
 
-# Create the Streamlit app
-st.title("Stock Price Prediction App")
-
-# Create an input field for the stock ticker
-stock_ticker = st.text_input("Enter a stock ticker")
-
-# Create a button to trigger the prediction
-predict_button = st.button("Predict")
-
-if predict_button:
-    # Load the stock price data
-    stock_data = yf.download(stock_ticker, start=start_date, end=end_date)
-
-    # Preprocess the stock price data (if necessary)
-    # ...
-
-    # Perform the prediction using the loaded model
-    predicted_price = model_1.predict(stock_data)
-
-    # Display the predicted price
-    st.subheader("Predicted Price")
-    st.write(predicted_price)
-
-    # Plot the stock price data and predicted prices
-    st.subheader("Stock Price Chart")
-    st.line_chart(stock_data["Close"])
-    st.line_chart(predicted_price)
+# Streamlit app
+def main():
+    # Set the page title
+    st.title("Stock Price Prediction App")
+    
+    # Get user input for stock ticker
+    stock_ticker = st.text_input("Enter a stock ticker")
+    
+    # Define the date range
+    start = '2010-01-01'
+    end = '2019-12-31'
+    
+    # Download the stock price data
+    df = yf.download(stock_ticker, start, end)
+    
+    if not df.empty:
+        # Preprocess the stock price data
+        stock_price_data = df['Close'].values
+        processed_data = preprocess_data(stock_price_data)
+        
+        # Make predictions using the model
+        predicted_price = model_1.predict(processed_data)
+        
+        # Display the predicted price
+        st.write(f"The predicted price for {stock_ticker} is ${predicted_price[0][0]:.2f}")
+    else:
+        st.write("No data available for the given stock ticker.")
+    
+# Run the Streamlit app
+if __name__ == '__main__':
+    main()

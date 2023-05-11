@@ -11,8 +11,7 @@ model_1 = keras.models.load_model("keras_model.h5")
 # Function to preprocess the stock data
 def preprocess_data(data):
     # Normalize the data
-    
-    data["Pct_change"] = data["Adj Close"].pct_change()    
+   
     
     return reshaped_data
 
